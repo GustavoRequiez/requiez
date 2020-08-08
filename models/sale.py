@@ -31,11 +31,11 @@ class SaleOrder(models.Model):
         payment_term_credits = (
             [payment
              for payment in (self.env['account.payment.term'].search([]))
-             if payment.line_ids[-1] and payment.line_ids[-1].days > 0])
+             if payment.line_ids[-1] and payment.line_ids[-1].days >= 0])
         for order in self.filtered(lambda r: r.payment_term_id
                                    in payment_term_credits):
-            if (not order.partner_id.expired_ignore and
-                    order.partner_id.credit_expired):
+            if (not order.partner_id.expired_ignore
+                    and order.partner_id.credit_expired):
                 raise exceptions.Warning(
                     _("AT THE MOMENT, IT'S NOT AUTHORIZE A CREDIT SALE. "
                       "THE CLIENT HAS EXPIRED BALANCE "

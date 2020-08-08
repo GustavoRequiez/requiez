@@ -33,11 +33,12 @@ class ResPartner(models.Model):
         payment_term_credits_ids = (
             [payment.id
              for payment in self.env['account.payment.term'].search([])
-             if payment.line_ids[-1] and payment.line_ids[-1].days > 0])
+             if payment.line_ids[-1] and payment.line_ids[-1].days >= 0])
         invoices = (self.env['account.invoice']
                     .search([
                         ('partner_id', '=', self.id),
                         ('state', '=', 'open'),
+                        ('type', '=', 'out_invoice'),
                         ('payment_term_id', 'in', payment_term_credits_ids)]))
         if not self.expired_ignore:
             self.credit_expired = False
